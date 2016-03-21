@@ -7,7 +7,7 @@ public interface ImgService {
 
     /**
      *
-     * @param inputStream
+     * @param
      * @param x
      * @param y
      * @param w

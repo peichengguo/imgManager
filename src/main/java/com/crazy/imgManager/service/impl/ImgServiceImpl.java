@@ -1,5 +1,6 @@
 package com.crazy.imgManager.service.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.crazy.imgManager.common.ImgUtils;
 import com.crazy.imgManager.service.ImgService;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -99,6 +100,9 @@ public class ImgServiceImpl implements ImgService{
         String fixPaths = "";
         for(String s : tempPath.split(",")){
             fixPaths += tempToFixSingle(s) + ",";
+        }
+        if(!StringUtils.isEmpty(fixPaths)){
+            fixPaths = fixPaths.substring(fixPaths.length()-1);
         }
         return fixPaths;
     }
