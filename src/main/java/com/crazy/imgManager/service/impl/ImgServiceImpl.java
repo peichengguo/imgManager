@@ -21,6 +21,8 @@ public class ImgServiceImpl implements ImgService{
 
     private static final String fixDir = "fix";
 
+    private static Random random = new Random(999);
+
 
     private void saveFile(String upPath,String uploadName,byte[] fileBytes){
         OutputStream outputStream = null;
@@ -41,8 +43,11 @@ public class ImgServiceImpl implements ImgService{
     }
 
     private String getRandomFileName(String suffix){
-
-        return System.currentTimeMillis() + new Random(50000).nextInt() + "." + suffix;
+        StringBuffer r = new StringBuffer();
+        for(int i = 0;i<5;i++){
+            r.append(random.nextInt(10));
+        }
+        return System.currentTimeMillis() + "-" + r.toString() + "." + suffix;
     }
 
     public HttpServletRequest getRequest(){
@@ -72,9 +77,9 @@ public class ImgServiceImpl implements ImgService{
             String cutName = getRandomFileName(suffix);
             fixPath = projectPath + tempDir + File.separator + cutName;
             String cutPath = srcUploadPath + File.separator + cutName;
-            if(!new File(cutPath).isDirectory()){
-                new File(cutPath).mkdirs();
-            }
+//            if(!new File(cutPath).isFile()){
+//                new File(cutPath)
+//            }
             Integer intX = Integer.parseInt(x);
             Integer intY = Integer.parseInt(y);
             if(w.indexOf(".") != -1){
@@ -99,10 +104,13 @@ public class ImgServiceImpl implements ImgService{
     public String tempToFix(String tempPath){
         String fixPaths = "";
         for(String s : tempPath.split(",")){
+            if(StringUtils.isEmpty(tempPath)){
+                continue;
+            }
             fixPaths += tempToFixSingle(s) + ",";
         }
         if(!StringUtils.isEmpty(fixPaths)){
-            fixPaths = fixPaths.substring(fixPaths.length()-1);
+            fixPaths = fixPaths.substring(0,fixPaths.length()-1);
         }
         return fixPaths;
     }
@@ -121,6 +129,9 @@ public class ImgServiceImpl implements ImgService{
             }
             String singleFixName = singleTempPath.substring(singleTempPath.lastIndexOf("/") + 1);
             String singleFixPath = realPath + File.separator + rootDir + File.separator + fixDir;
+            if(!new File(singleFixPath).isDirectory()){
+                new File(singleFixPath).mkdirs();
+            }
             refixStr = rootDir + File.separator + fixDir + File.separator + singleFixName;
             //读取临时目录文件
             inputStream = new FileInputStream(tempStr);
