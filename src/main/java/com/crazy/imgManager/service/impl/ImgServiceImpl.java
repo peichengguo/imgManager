@@ -3,11 +3,13 @@ package com.crazy.imgManager.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.crazy.imgManager.common.ImgUtils;
 import com.crazy.imgManager.service.ImgService;
+import com.sun.tools.doclets.internal.toolkit.util.DocFinder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -15,13 +17,27 @@ import java.util.Random;
  */
 public class ImgServiceImpl implements ImgService{
 
-    private static final String rootDir = "upload";
+    private static String realPath = "/usr/local/testPicAddress";
+
+    private static String rootDir = "/default";
 
     private static final String tempDir = "temp";
 
     private static final String fixDir = "fix";
 
     private static Random random = new Random(999);
+
+    static {
+        Properties pro = new Properties();
+        InputStream in = ImgServiceImpl.class.getClassLoader().getResourceAsStream("/conf/setting.properties");
+        try{
+            pro.load(in);
+            realPath = pro.getProperty("picAddress").trim();
+            rootDir = pro.getProperty("picProject").trim();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
     private void saveFile(String upPath,String uploadName,byte[] fileBytes){
@@ -57,8 +73,6 @@ public class ImgServiceImpl implements ImgService{
 
     @Override
     public String uploadToTemp(String x,String y,String w,String h,String compressWid,String suffix,byte[] fileBytes) {
-        HttpServletRequest request = getRequest();
-        String realPath = request.getSession().getServletContext().getRealPath("/");
         System.out.println(realPath);
         String projectPath = rootDir + File.separator;
         String srcUploadPath = realPath + projectPath + tempDir;
@@ -120,8 +134,7 @@ public class ImgServiceImpl implements ImgService{
         OutputStream outputStream = null;
         String refixStr = "";
         try{
-            HttpServletRequest request = getRequest();
-            String realPath = request.getSession().getServletContext().getRealPath("/");
+//            String realPath = request.getSession().getServletContext().getRealPath("/");
             String tempStr = realPath + File.separator + singleTempPath;
             //非临时目录，不移动
             if(tempStr.indexOf(tempDir) == -1){
