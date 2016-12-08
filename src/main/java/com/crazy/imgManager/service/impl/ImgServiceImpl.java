@@ -3,12 +3,13 @@ package com.crazy.imgManager.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.crazy.imgManager.common.ImgUtils;
 import com.crazy.imgManager.service.ImgService;
-import com.sun.tools.doclets.internal.toolkit.util.DocFinder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
@@ -17,7 +18,7 @@ import java.util.Random;
  */
 public class ImgServiceImpl implements ImgService{
 
-    private static String realPath = "/usr/local/testPicAddress";
+    private static String realPath = "/usr/local/deploy/upload";
 
     private static String rootDir = "/default";
 
@@ -197,5 +198,26 @@ public class ImgServiceImpl implements ImgService{
         }
 
         return fixPath;
+    }
+
+
+    @Override
+    public String uploadToFix(String projectName,String suffix, byte[] fileBytes) {
+        String fileName = null;
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String currentTime = sdf.format(new Date());
+            String filePath = realPath + File.separator + projectName + File.separator + currentTime;
+            File file = new File(filePath);
+            if(!file.exists() && !file.isDirectory()){
+                file.mkdirs();
+            }
+            fileName = getRandomFileName(suffix);
+            //保存文件
+            saveFile(filePath,fileName,fileBytes);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return fileName;
     }
 }

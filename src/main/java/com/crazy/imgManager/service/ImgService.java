@@ -22,4 +22,6 @@ public interface ImgService {
 
     public String testHessian(String input,byte[] fileBytes);
 
+    public String uploadToFix(String projectName,String suffix,byte[] fileBytes);
+
 }
