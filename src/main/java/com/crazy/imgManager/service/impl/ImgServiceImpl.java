@@ -203,7 +203,7 @@ public class ImgServiceImpl implements ImgService{
 
     @Override
     public String uploadToFix(String projectName,String suffix, byte[] fileBytes) {
-        String fileName = null;
+        String returnName = null;
         try{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
             String currentTime = sdf.format(new Date());
@@ -212,12 +212,13 @@ public class ImgServiceImpl implements ImgService{
             if(!file.exists() && !file.isDirectory()){
                 file.mkdirs();
             }
-            fileName = getRandomFileName(suffix);
+            String fileName = getRandomFileName(suffix);
             //保存文件
             saveFile(filePath,fileName,fileBytes);
+            returnName = currentTime + File.separator + fileName;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return fileName;
+        return returnName;
     }
 }
