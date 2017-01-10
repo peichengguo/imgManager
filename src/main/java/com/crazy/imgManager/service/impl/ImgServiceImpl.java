@@ -64,7 +64,7 @@ public class ImgServiceImpl implements ImgService{
         for(int i = 0;i<5;i++){
             r.append(random.nextInt(10));
         }
-        return System.currentTimeMillis() + "-" + r.toString() + "." + suffix;
+        return System.nanoTime() + r.toString() + "." + suffix;
     }
 
     public HttpServletRequest getRequest(){
